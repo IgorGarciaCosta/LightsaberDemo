@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,8 +8,8 @@ UCLASS()
 class LIGHTSABERDEMO_API ALightSaberParent : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ALightSaberParent();
 
@@ -19,16 +17,28 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsSaberIgnited = false;
+
+	// Main static mesh for the lightsaber
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightSaber")
+	UStaticMeshComponent* LightSaberMain;
+
+	// Scene component for the start of the laser
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightSaber")
+	USceneComponent* LaserStartPoint;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "LightSaber")
 	void IgniteLightsaber();
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent,Category = "LightSaber")
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "LightSaber")
 	void DisableLightsaber();
 
-
+private:
+	void TraceSaberCollider();
 };
+	
