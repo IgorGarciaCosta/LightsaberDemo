@@ -43,10 +43,17 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "LightSaber")
 	void DisableLightsaber();
 
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "LightSaber")
+	void DrawDecal(FVector DecalSize, FVector Location, FRotator Rotation);
+
+
 private:
 	void TraceSaberCollider();
 	// Handle to the Niagara component
 	UPROPERTY()
 	UNiagaraComponent* LaserSparklesComponent;
+
+	UFUNCTION()
+	float CalculateDecalSizeBasedOnDistance(float Distance);
 };
 	

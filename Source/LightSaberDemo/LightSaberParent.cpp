@@ -82,6 +82,11 @@ void ALightSaberParent::TraceSaberCollider()
 			LaserSparklesComponent->SetWorldRotation(NewRotation);
 		}
 
+		float DecalSize = CalculateDecalSizeBasedOnDistance((HitResult.ImpactPoint - Start).Size());
+		FVector DecalSizeParameter = FVector(DecalSize, DecalSize, DecalSize);
+		//DrawDecal(FVector(1, 1, 1), HitResult.ImpactPoint, FRotationMatrix::MakeFromX(HitResult.ImpactNormal).Rotator());
+		DrawDecal(DecalSizeParameter, HitResult.ImpactPoint, FRotationMatrix::MakeFromX(HitResult.ImpactNormal).Rotator());
+
 		/*if (GEngine)
 		{
 			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
@@ -93,4 +98,20 @@ void ALightSaberParent::TraceSaberCollider()
 		LaserSparklesComponent->DestroyComponent();
 		LaserSparklesComponent = nullptr;
 	}
+}
+
+float ALightSaberParent::CalculateDecalSizeBasedOnDistance(float Distance)
+{
+	// Calculate the distance from start to hit point
+	//(HitResult.ImpactPoint - Start).Size();
+
+	// Map the distance to a decal size between 5 and 20
+	float MinDistance = 0.0f;
+	float MaxDistance = 70.0f; // Maximum length of the line trace
+	float MinSize = 20.0f;
+	float MaxSize = 5.0f;
+
+	// Calculate the decal size inversely proportional to the distance
+	float DecalSize = FMath::GetMappedRangeValueClamped(FVector2D(MinDistance, MaxDistance), FVector2D(MinSize, MaxSize), Distance);
+	return DecalSize;
 }
