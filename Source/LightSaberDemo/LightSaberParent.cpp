@@ -87,10 +87,7 @@ void ALightSaberParent::TraceSaberCollider()
 		//DrawDecal(FVector(1, 1, 1), HitResult.ImpactPoint, FRotationMatrix::MakeFromX(HitResult.ImpactNormal).Rotator());
 		DrawDecal(DecalSizeParameter, HitResult.ImpactPoint, FRotationMatrix::MakeFromX(HitResult.ImpactNormal).Rotator());
 
-		/*if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
-		}*/
+		
 	}
 	else if (LaserSparklesComponent)
 	{
