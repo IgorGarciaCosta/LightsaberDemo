@@ -54,7 +54,9 @@ void ALightSaberParent::TraceSaberCollider()
 
 	if (bHit)
 	{
-		if (!LaserSparklesComponent && LaserSparkles)
+
+		//niagara system spawn related
+		if (LaserSparkles)
 		{
 			// Calculate the opposite direction of the hit normal for the forward vector
 			FVector OppositeDirection = -HitResult.ImpactNormal;
@@ -86,15 +88,23 @@ void ALightSaberParent::TraceSaberCollider()
 		FVector DecalSizeParameter = FVector(DecalSize, DecalSize, DecalSize);
 		//DrawDecal(FVector(1, 1, 1), HitResult.ImpactPoint, FRotationMatrix::MakeFromX(HitResult.ImpactNormal).Rotator());
 		DrawDecal(DecalSizeParameter, HitResult.ImpactPoint, FRotationMatrix::MakeFromX(HitResult.ImpactNormal).Rotator());
-
+		
+		
+		//impact sound related
+		if (bCanPlayImpactSound) {
+			PlayImpactSound();
+			bCanPlayImpactSound = false;
+		}
 		
 	}
-	else if (LaserSparklesComponent)
-	{
-		// Destroy the Niagara component if nothing is hit
-		LaserSparklesComponent->DestroyComponent();
-		LaserSparklesComponent = nullptr;
+
+	else {
+		if (!bCanPlayImpactSound) {
+			StopImpactSound();
+			bCanPlayImpactSound = true;
+		}
 	}
+	
 }
 
 float ALightSaberParent::CalculateDecalSizeBasedOnDistance(float Distance)

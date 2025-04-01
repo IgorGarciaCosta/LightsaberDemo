@@ -46,10 +46,17 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "LightSaber")
 	void DrawDecal(FVector DecalSize, FVector Location, FRotator Rotation);
 
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "LightSaber")
+	void PlayImpactSound();
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "LightSaber")
+	void StopImpactSound();
+
 
 private:
 	void TraceSaberCollider();
 	// Handle to the Niagara component
+
+	bool bCanPlayImpactSound = true;
 	UPROPERTY()
 	UNiagaraComponent* LaserSparklesComponent;
 
