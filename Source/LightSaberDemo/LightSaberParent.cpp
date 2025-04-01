@@ -108,8 +108,8 @@ float ALightSaberParent::CalculateDecalSizeBasedOnDistance(float Distance)
 	// Map the distance to a decal size between 5 and 20
 	float MinDistance = 0.0f;
 	float MaxDistance = 70.0f; // Maximum length of the line trace
-	float MinSize = 20.0f;
-	float MaxSize = 5.0f;
+	float MinSize = 15.0f;
+	float MaxSize = 3.0f;
 
 	// Calculate the decal size inversely proportional to the distance
 	float DecalSize = FMath::GetMappedRangeValueClamped(FVector2D(MinDistance, MaxDistance), FVector2D(MinSize, MaxSize), Distance);
