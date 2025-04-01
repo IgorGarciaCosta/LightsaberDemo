@@ -1,6 +1,8 @@
 #include "LightSaberParent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "DrawDebugHelpers.h"
 
 // Sets default values
@@ -41,20 +43,54 @@ void ALightSaberParent::TraceSaberCollider()
 
 	FHitResult HitResult;
 	FVector Start = LaserStartPoint->GetComponentLocation();
-	FVector End = Start + LaserStartPoint->GetForwardVector() * 100.0f; // 100 units in the forward direction
+	FVector End = Start + LaserStartPoint->GetForwardVector() * 70.0f;
 
 	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this); // Ignore self to prevent false positives
+	CollisionParams.AddIgnoredActor(this);
 
-	// Perform the line trace
 	bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams);
 
-	// Draw a debug line for visualization
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 1.0f);
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 1.0f, 0, 1.0f);
 
-	// Log the hit result if something is hit
 	if (bHit)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
+		if (!LaserSparklesComponent && LaserSparkles)
+		{
+			// Calculate the opposite direction of the hit normal for the forward vector
+			FVector OppositeDirection = -HitResult.ImpactNormal;
+
+			// Create a rotation from the opposite direction
+			FRotator NewRotation = FRotationMatrix::MakeFromX(OppositeDirection).Rotator();
+
+			// Spawn the Niagara component at the hit location with the calculated rotation
+			LaserSparklesComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+				GetWorld(),
+				LaserSparkles,
+				HitResult.ImpactPoint,
+				NewRotation
+			);
+		}
+
+		if (LaserSparklesComponent)
+		{
+			// Update the position and orientation of the Niagara component
+			LaserSparklesComponent->SetWorldLocation(HitResult.ImpactPoint);
+
+			// Calculate the opposite direction of the hit normal for the forward vector
+			FVector OppositeDirection = -HitResult.ImpactNormal;
+			FRotator NewRotation = FRotationMatrix::MakeFromX(OppositeDirection).Rotator();
+			LaserSparklesComponent->SetWorldRotation(NewRotation);
+		}
+
+		/*if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, FString::Printf(TEXT("Hit: %s"), *HitResult.GetActor()->GetName()));
+		}*/
+	}
+	else if (LaserSparklesComponent)
+	{
+		// Destroy the Niagara component if nothing is hit
+		LaserSparklesComponent->DestroyComponent();
+		LaserSparklesComponent = nullptr;
 	}
 }

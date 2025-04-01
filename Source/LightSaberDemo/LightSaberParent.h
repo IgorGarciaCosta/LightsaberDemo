@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraSystem.h"
 #include "LightSaberParent.generated.h"
 
 UCLASS()
@@ -29,6 +30,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightSaber")
 	USceneComponent* LaserStartPoint;
 
+	// Niagara system for the laser sparkles
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	UNiagaraSystem* LaserSparkles;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -40,5 +45,8 @@ public:
 
 private:
 	void TraceSaberCollider();
+	// Handle to the Niagara component
+	UPROPERTY()
+	UNiagaraComponent* LaserSparklesComponent;
 };
 	
